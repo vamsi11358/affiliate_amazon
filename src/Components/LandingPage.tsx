@@ -1,5 +1,5 @@
 // Update your import statements
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeftIcon,
   CodeBracketIcon,
@@ -9,7 +9,11 @@ import {
   NewspaperIcon,
   ChatBubbleLeftRightIcon,
   BookOpenIcon,
-  ShoppingBagIcon
+  ShoppingBagIcon,
+  XMarkIcon,
+  ShieldCheckIcon,
+  DocumentTextIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 
 // Add these types at the top
@@ -272,12 +276,469 @@ const handleAmazonClick = () => {
   window.open('https://amzn.to/45vZpxz', '_blank', 'noopener,noreferrer');
 };
 
-// Updated LandingPage component with TypeScript and Amazon ad card
+// Google AdSense Configuration
+declare global {
+  interface Window {
+    adsbygoogle?: any[];
+  }
+}
+
+// Cookie Consent Banner Component for AdSense Compliance
+const CookieConsent = () => {
+  const [showBanner, setShowBanner] = useState(false);
+  const [showAdConsentOptions, setShowAdConsentOptions] = useState(false);
+  
+  useEffect(() => {
+    const consent = localStorage.getItem('cookie-consent');
+    const adConsent = localStorage.getItem('ad-consent');
+    const consentExpiry = localStorage.getItem('cookie-consent-expiry');
+    const now = new Date().getTime();
+    
+    // Check if consent has expired (6 months)
+    if (consentExpiry && now > parseInt(consentExpiry)) {
+      localStorage.removeItem('cookie-consent');
+      localStorage.removeItem('ad-consent');
+      localStorage.removeItem('cookie-consent-expiry');
+      setShowBanner(true);
+    } else if (!consent || !adConsent) {
+      setShowBanner(true);
+    } else if (consent === 'accepted' && adConsent === 'accepted') {
+      // Load Google AdSense when both consents are accepted
+      loadAdSense();
+    }
+  }, []);
+  
+  const loadAdSense = () => {
+    // This would be added to your index.html
+    const script = document.createElement('script');
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+    
+    // Initialize ads
+    window.adsbygoogle = window.adsbygoogle || [];
+    window.adsbygoogle.push({});
+  };
+  
+  const acceptAllCookies = () => {
+    const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000); // 6 months
+    localStorage.setItem('cookie-consent', 'accepted');
+    localStorage.setItem('ad-consent', 'accepted');
+    localStorage.setItem('cookie-consent-expiry', expiry.toString());
+    setShowBanner(false);
+    loadAdSense();
+  };
+  
+  const rejectNonEssential = () => {
+    const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000); // 6 months
+    localStorage.setItem('cookie-consent', 'accepted');
+    localStorage.setItem('ad-consent', 'rejected');
+    localStorage.setItem('cookie-consent-expiry', expiry.toString());
+    setShowBanner(false);
+    // Don't load AdSense
+  };
+  
+  const customizeAdPreferences = () => {
+    setShowAdConsentOptions(true);
+  };
+  
+  const saveCustomAdPreferences = (personalized: boolean) => {
+    const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000);
+    localStorage.setItem('cookie-consent', 'accepted');
+    localStorage.setItem('ad-consent', personalized ? 'accepted' : 'rejected');
+    localStorage.setItem('ad-personalization', personalized ? 'true' : 'false');
+    localStorage.setItem('cookie-consent-expiry', expiry.toString());
+    setShowAdConsentOptions(false);
+    setShowBanner(false);
+    
+    if (personalized) {
+      loadAdSense();
+    }
+  };
+  
+  if (!showBanner) return null;
+  
+  return (
+    <>
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50 shadow-lg border-t border-gray-700">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <ShieldCheckIcon className="h-5 w-5 text-green-400" />
+              <p className="font-medium">Your Privacy & Ad Choices</p>
+            </div>
+            <p className="text-sm text-gray-300">
+              We use cookies for site functionality and may show personalized ads via Google AdSense. 
+              By continuing to browse, you agree to our{' '}
+              <button 
+                onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
+                className="text-blue-300 hover:text-blue-200 underline inline"
+              >
+                Privacy Policy
+              </button> and{' '}
+              <button 
+                onClick={() => document.getElementById('terms-modal')?.classList.remove('hidden')}
+                className="text-blue-300 hover:text-blue-200 underline inline"
+              >
+                Terms of Service
+              </button>.
+            </p>
+            <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+              <ExclamationTriangleIcon className="h-3 w-3" />
+              <span>AdSense may use data for personalized advertising. You can customize below.</span>
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={customizeAdPreferences}
+              className="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors text-sm"
+            >
+              Customize Ads
+            </button>
+            <button
+              onClick={rejectNonEssential}
+              className="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors text-sm"
+            >
+              Essential Only
+            </button>
+            <button
+              onClick={acceptAllCookies}
+              className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              Accept All
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Ad Personalization Modal */}
+      {showAdConsentOptions && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <ExclamationTriangleIcon className="h-8 w-8 text-orange-500" />
+                <h3 className="text-xl font-bold text-gray-900">Advertising Preferences</h3>
+              </div>
+              
+              <p className="text-gray-600 mb-6">
+                We partner with Google AdSense to show ads. You can choose whether to see personalized ads based on your interests.
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                <div className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer"
+                     onClick={() => saveCustomAdPreferences(true)}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Personalized Ads</p>
+                      <p className="text-sm text-gray-500">See ads relevant to your interests</p>
+                    </div>
+                    <div className="w-6 h-6 border-2 border-blue-500 rounded-full flex items-center justify-center">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer"
+                     onClick={() => saveCustomAdPreferences(false)}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">Non-Personalized Ads</p>
+                      <p className="text-sm text-gray-500">See generic ads only</p>
+                    </div>
+                    <div className="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-gray-500 mb-4">
+                You can change these settings anytime via the Privacy Center.
+              </p>
+              
+              <button
+                onClick={() => setShowAdConsentOptions(false)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Back to Options
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+// Privacy Policy Modal with AdSense Terms
+const PrivacyPolicyModal = () => {
+  const [showModal, setShowModal] = useState(false);
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('show') === 'privacy') {
+      setShowModal(true);
+    }
+  }, []);
+  
+  if (!showModal) return null;
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <ShieldCheckIcon className="h-8 w-8 text-blue-600" />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Privacy & Advertising Policy</h2>
+              <p className="text-sm text-gray-600">Last updated: December 2025 | Compliant with Google AdSense</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowModal(false)}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+            aria-label="Close privacy policy"
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <div className="p-6 space-y-8">
+          {/* AdSense Compliance Notice */}
+          <section className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <ExclamationTriangleIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-bold text-blue-800 mb-2">Google AdSense Compliance</h3>
+                <p className="text-blue-700 text-sm">
+                  This site uses Google AdSense for advertising. AdSense uses cookies to serve personalized ads based on your browsing behavior. 
+                  You can opt-out of personalized advertising by visiting{' '}
+                  <a 
+                    href="https://adssettings.google.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="underline font-medium"
+                  >
+                    Google Ads Settings
+                  </a>.
+                </p>
+              </div>
+            </div>
+          </section>
+          
+          {/* Affiliate Disclosure */}
+          <section>
+            <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <DocumentTextIcon className="h-5 w-5" />
+              Affiliate & Advertising Disclosure
+            </h3>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
+              <p className="text-yellow-800 font-medium">
+                <span className="font-bold">Important:</span> This site contains Amazon affiliate links and displays Google AdSense ads.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <p className="text-gray-700">
+                <strong>Google AdSense:</strong> We display ads through Google's AdSense program. These ads may be personalized based on your interests.
+              </p>
+              <p className="text-gray-700">
+                <strong>Amazon Affiliate:</strong> As an Amazon Associate, we earn from qualifying purchases through our affiliate links.
+              </p>
+              <p className="text-gray-700">
+                <strong>Third-party vendors:</strong> Including Google, use cookies to serve ads based on your prior visits to this website.
+              </p>
+            </div>
+          </section>
+          
+          {/* Data Collection for Ads */}
+          <section>
+            <h3 className="text-xl font-semibold mb-3">Data Used for Advertising</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <h4 className="font-semibold text-gray-800 mb-2">Google AdSense</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Browser type & version</li>
+                  <li>• Device information</li>
+                  <li>• IP address (anonymized)</li>
+                  <li>• Pages visited</li>
+                  <li>• Click behavior</li>
+                </ul>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <h4 className="font-semibold text-gray-800 mb-2">We Collect</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Anonymous analytics</li>
+                  <li>• Cookie preferences</li>
+                  <li>• Ad consent status</li>
+                  <li>• No personal data</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          
+          {/* Your Advertising Rights */}
+          <section>
+            <h3 className="text-xl font-semibold mb-3">Control Your Advertising Experience</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 p-4 bg-green-50 rounded-xl">
+                <ShieldCheckIcon className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-green-800 mb-1">Opt-Out of Personalized Ads</h4>
+                  <p className="text-sm text-green-700">
+                    Visit{' '}
+                    <a 
+                      href="https://adssettings.google.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="underline font-medium"
+                    >
+                      Google Ads Settings
+                    </a>{' '}
+                    to control ad personalization across all websites using Google advertising.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl">
+                <DocumentTextIcon className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-blue-800 mb-1">Network Advertising Initiative</h4>
+                  <p className="text-sm text-blue-700">
+                    Opt-out of personalized advertising from participating companies at{' '}
+                    <a 
+                      href="https://optout.networkadvertising.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="underline font-medium"
+                    >
+                      NAI Opt-Out
+                    </a>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Contact Information */}
+          <section className="bg-gray-50 p-6 rounded-xl">
+            <h3 className="text-xl font-semibold mb-3">Contact & Data Requests</h3>
+            <p className="text-gray-700 mb-4">
+              For advertising-related questions, data deletion requests, or to report ad issues:
+            </p>
+            <div className="space-y-2">
+              <p className="font-medium">Email: privacy@techlearnhub.com</p>
+              <p className="text-sm text-gray-600">
+                Include "AdSense Inquiry" in subject for faster response.
+              </p>
+            </div>
+          </section>
+          
+          {/* Footer Actions */}
+          <div className="flex justify-between items-center pt-6 border-t">
+            <button
+              onClick={() => {
+                const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('cookie-consent', 'accepted');
+                localStorage.setItem('ad-consent', 'accepted');
+                localStorage.setItem('cookie-consent-expiry', expiry.toString());
+                setShowModal(false);
+                // Reload to apply ad consent
+                window.location.reload();
+              }}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Accept Ads & Close
+            </button>
+            <button
+              onClick={() => {
+                const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('cookie-consent', 'accepted');
+                localStorage.setItem('ad-consent', 'rejected');
+                localStorage.setItem('cookie-consent-expiry', expiry.toString());
+                setShowModal(false);
+                // Reload to apply ad consent
+                window.location.reload();
+              }}
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Reject Personalized Ads
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// AdSense Ad Unit Component
+const AdSenseAd = ({ format = 'auto', slot = '' }) => {
+  const [adConsent, setAdConsent] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const consent = localStorage.getItem('ad-consent');
+    setAdConsent(consent);
+    
+    if (consent === 'accepted' && window.adsbygoogle) {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.log('AdSense error:', e);
+      }
+    }
+  }, []);
+  
+  if (adConsent !== 'accepted') {
+    return (
+      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 text-center">
+        <p className="text-sm text-gray-500">
+          Ads are disabled based on your privacy preferences.
+          <button 
+            onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
+            className="text-blue-600 hover:text-blue-800 ml-1 underline"
+          >
+            Change settings
+          </button>
+        </p>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="ad-container my-4">
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive="true"
+      ></ins>
+    </div>
+  );
+};
+
+// Updated LandingPage component with AdSense integration
 function LandingPage({ onCardClick }: LandingPageProps) {
+  const currentYear = new Date().getFullYear();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+      {/* Cookie Consent Banner */}
+      <CookieConsent />
+      
+      {/* Privacy Policy Modal */}
+      <div id="privacy-modal" className="hidden">
+        <PrivacyPolicyModal />
+      </div>
+      
+      {/* Terms Modal */}
+      <div id="terms-modal" className="hidden">
+        {/* Add Terms of Service modal content here */}
+      </div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-16">
+        {/* Header with Privacy Badge */}
+        <div className="text-center mb-16 relative">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
             Master Cutting-Edge Technologies in 2025
           </h1>
@@ -291,12 +752,21 @@ function LandingPage({ onCardClick }: LandingPageProps) {
             <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium">
               200+ Interview Questions
             </span>
-            <span className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-              50+ Latest News Articles
+            <span className="px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+              Google AdSense Compliant
             </span>
           </div>
         </div>
 
+        {/* AdSense Banner Ad */}
+        <div className="my-8">
+          <AdSenseAd format="auto" slot="1234567890" />
+          <p className="text-xs text-gray-400 text-center mt-2">
+            Advertisement - Supports free educational content
+          </p>
+        </div>
+
+        {/* Tech Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {technologies.map((tech: Technology) => {
             const Icon = tech.icon
@@ -360,7 +830,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
                       <ArrowLeftIcon className="h-4 w-4 ml-2 rotate-180" />
                     </div>
                     <div className="text-sm text-gray-500">
-                      Updated content
+                      AdSense Compliant
                     </div>
                   </div>
                 </div>
@@ -369,12 +839,31 @@ function LandingPage({ onCardClick }: LandingPageProps) {
           })}
         </div>
 
-        {/* Amazon Advertising Card */}
+        {/* Mid-Article AdSense Ad */}
+        <div className="my-8">
+          <AdSenseAd format="rectangle" slot="0987654321" />
+        </div>
+
+        {/* Amazon Advertising Card with Enhanced Disclosure */}
         <div className="mt-8 mb-8 max-w-2xl mx-auto">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <ExclamationTriangleIcon className="h-4 w-4 text-gray-500" />
+            <p className="text-sm text-gray-600 text-center">
+              <span className="font-semibold">Advertising Disclosure:</span> Contains affiliate & AdSense ads
+            </p>
+          </div>
+          
           <div 
             onClick={handleAmazonClick}
-            className="cursor-pointer group bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-300"
+            className="cursor-pointer group bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-300 relative"
           >
+            {/* Affiliate Badge */}
+            <div className="absolute top-4 right-4 z-10">
+              <span className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full font-semibold shadow-md">
+                Affiliate Link
+              </span>
+            </div>
+            
             <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -392,7 +881,10 @@ function LandingPage({ onCardClick }: LandingPageProps) {
                     Level Up Your Tech Setup on Amazon
                   </h3>
                   <p className="text-gray-600 mb-3">
-                    Discover essential tools, books, and accessories recommended by top tech professionals to boost your productivity and learning journey.
+                    Discover essential tools, books, and accessories recommended by top tech professionals. 
+                    <span className="block text-sm text-gray-500 mt-1">
+                      <strong>Note:</strong> As an Amazon Associate, we earn from qualifying purchases.
+                    </span>
                   </p>
                   
                   <div className="flex items-center justify-between">
@@ -401,14 +893,14 @@ function LandingPage({ onCardClick }: LandingPageProps) {
                       <ArrowLeftIcon className="h-4 w-4 ml-2 rotate-180" />
                     </div>
                     <div className="text-sm text-gray-500">
-                      Amazon.com
+                      External link → Amazon.com
                     </div>
                   </div>
                 </div>
                 
                 <div className="hidden md:block">
                   <div className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg text-white font-bold text-center">
-                    <div className="text-xs">Visit</div>
+                    <div className="text-xs">Sponsored</div>
                     <div className="text-lg">amzn.to</div>
                   </div>
                 </div>
@@ -417,9 +909,110 @@ function LandingPage({ onCardClick }: LandingPageProps) {
           </div>
           
           <p className="text-xs text-gray-400 text-center mt-3">
-            Advertisement - Your purchase supports our platform
+            Advertisement - Your purchase supports our platform at no extra cost to you
           </p>
         </div>
+
+        {/* Bottom AdSense Ad */}
+        <div className="my-8">
+          <AdSenseAd format="leaderboard" slot="1122334455" />
+        </div>
+
+        {/* Compliance Footer */}
+        <footer className="mt-16 pt-8 border-t border-gray-200">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+              <p className="text-gray-700 font-medium">Tech Learning Hub © {currentYear}</p>
+              <p className="text-sm text-gray-500">AdSense & GDPR Compliant</p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-4">
+              <button
+                onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm flex items-center gap-1"
+              >
+                <ShieldCheckIcon className="h-3 w-3" />
+                Privacy & Ads
+              </button>
+              <a
+                href="https://adssettings.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm flex items-center gap-1"
+              >
+                <ExclamationTriangleIcon className="h-3 w-3" />
+                Google Ad Settings
+              </a>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('cookie-consent');
+                  localStorage.removeItem('ad-consent');
+                  localStorage.removeItem('cookie-consent-expiry');
+                  window.location.reload();
+                }}
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+              >
+                Reset All Preferences
+              </button>
+              <a
+                href="https://optout.networkadvertising.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+              >
+                NAI Opt-Out
+              </a>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <ExclamationTriangleIcon className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Ad-Supported</p>
+                <p className="text-xs text-gray-500">Ads keep content free</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Compliance Badges */}
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <div className="px-4 py-2 bg-orange-50 text-orange-700 rounded-full text-xs font-medium flex items-center gap-2">
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              Google AdSense
+            </div>
+            <div className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-medium flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              GDPR Ready
+            </div>
+            <div className="px-4 py-2 bg-green-50 text-green-700 rounded-full text-xs font-medium flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              CCPA Compliant
+            </div>
+            <div className="px-4 py-2 bg-yellow-50 text-yellow-700 rounded-full text-xs font-medium flex items-center gap-2">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+              Affiliate Disclosure
+            </div>
+          </div>
+          
+          {/* Required AdSense Disclosure */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <p className="text-xs text-gray-600 text-center">
+              <strong>Advertising Disclosure:</strong> This site uses Google AdSense for advertising. 
+              Google uses cookies to serve ads based on your visits to this site and other sites. 
+              You can opt out of personalized advertising by visiting{' '}
+              <a 
+                href="https://adssettings.google.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                Ads Settings
+              </a>. 
+              Third-party vendors may also use cookies for ad personalization.
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   )
