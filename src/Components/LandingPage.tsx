@@ -8,7 +8,8 @@ import {
   SparklesIcon,
   NewspaperIcon,
   ChatBubbleLeftRightIcon,
-  BookOpenIcon
+  BookOpenIcon,
+  ShoppingBagIcon
 } from '@heroicons/react/24/outline'
 
 // Add these types at the top
@@ -41,10 +42,9 @@ interface LandingPageProps {
   onCardClick: (tech: Technology) => void;
 }
 
-
-
 // Updated technologies array with enhanced content
 const technologies: Technology[] = [
+  // ... (keep all existing technology objects exactly as they are)
   {
     id: 'fullstack',
     title: 'Full Stack Development',
@@ -267,7 +267,12 @@ const technologies: Technology[] = [
   }
 ]
 
-// Updated LandingPage component with TypeScript - FIXED ARITHMETIC ERROR
+// Helper function to open Amazon URL
+const handleAmazonClick = () => {
+  window.open('https://amzn.to/4jrVuHK', '_blank', 'noopener,noreferrer');
+};
+
+// Updated LandingPage component with TypeScript and Amazon ad card
 function LandingPage({ onCardClick }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -292,7 +297,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {technologies.map((tech: Technology) => {
             const Icon = tech.icon
             const remainingTopicsCount = tech.topics.length - 4;
@@ -363,8 +368,61 @@ function LandingPage({ onCardClick }: LandingPageProps) {
             )
           })}
         </div>
+
+        {/* Amazon Advertising Card */}
+        <div className="mt-8 mb-8 max-w-2xl mx-auto">
+          <div 
+            onClick={handleAmazonClick}
+            className="cursor-pointer group bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-300"
+          >
+            <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="inline-flex p-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500">
+                  <ShoppingBagIcon className="h-8 w-8 text-white" />
+                </div>
+                <span className="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
+                  Sponsored
+                </span>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+                    Level Up Your Tech Setup on Amazon
+                  </h3>
+                  <p className="text-gray-600 mb-3">
+                    Discover essential tools, books, and accessories recommended by top tech professionals to boost your productivity and learning journey.
+                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-orange-600 font-semibold group-hover:translate-x-2 transition-transform">
+                      <span>Shop Recommended Tech</span>
+                      <ArrowLeftIcon className="h-4 w-4 ml-2 rotate-180" />
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Amazon.com
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="hidden md:block">
+                  <div className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg text-white font-bold text-center">
+                    <div className="text-xs">Visit</div>
+                    <div className="text-lg">amzn.to</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-xs text-gray-400 text-center mt-3">
+            Advertisement - Your purchase supports our platform
+          </p>
+        </div>
       </div>
     </div>
   )
 }
+
 export default LandingPage;
