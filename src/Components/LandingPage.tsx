@@ -273,7 +273,7 @@ const technologies: Technology[] = [
 
 // Helper function to open Amazon URL
 const handleAmazonClick = () => {
-  window.open('https://amzn.to/4pwUiEG', '_blank', 'noopener,noreferrer');
+  window.open('https://amzn.to/3YOnRXv', '_blank', 'noopener,noreferrer');
 };
 
 // Google AdSense Configuration
