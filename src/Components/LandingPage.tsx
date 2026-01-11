@@ -9,7 +9,6 @@ import {
   NewspaperIcon,
   ChatBubbleLeftRightIcon,
   BookOpenIcon,
-  ShoppingBagIcon,
   XMarkIcon,
   ShieldCheckIcon,
   DocumentTextIcon,
