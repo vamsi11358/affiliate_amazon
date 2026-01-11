@@ -872,6 +872,7 @@ const AmazonPromoCard = () => {
           <div className="flex items-center justify-between mb-3 md:mb-4">
             <div className="inline-flex p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500">
               <ShoppingBagIcon className="h-5 w-5 md:h-6 md:w-6 lg:h-8 lg:w-8 text-white" />
+              <h3 className='bold text-2xl ml-2'>Amazon</h3>
             </div>
             <span className="px-2 py-0.5 md:px-3 md:py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
               Sponsored
