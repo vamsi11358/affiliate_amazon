@@ -303,7 +303,7 @@ const MobileNavDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
               <XIcon className="h-6 w-6" />
             </button>
           </div>
-          
+
           <div className="space-y-6">
             <button
               onClick={() => {
@@ -315,7 +315,7 @@ const MobileNavDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
               <ShieldCheckIcon className="h-5 w-5 text-gray-600" />
               <span className="font-medium">Privacy & Ads</span>
             </button>
-            
+
             <a
               href="https://adssettings.google.com"
               target="_blank"
@@ -325,7 +325,7 @@ const MobileNavDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
               <ExclamationTriangleIcon className="h-5 w-5 text-gray-600" />
               <span className="font-medium">Google Ad Settings</span>
             </a>
-            
+
             <button
               onClick={() => {
                 localStorage.removeItem('cookie-consent');
@@ -339,7 +339,7 @@ const MobileNavDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
               <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
               <span className="font-medium">Reset Preferences</span>
             </button>
-            
+
             <div className="pt-6 border-t">
               <p className="text-sm text-gray-500 mb-3">Compliance Badges</p>
               <div className="grid grid-cols-2 gap-2">
@@ -362,13 +362,13 @@ const MobileNavDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showAdConsentOptions, setShowAdConsentOptions] = useState(false);
-  
+
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
     const adConsent = localStorage.getItem('ad-consent');
     const consentExpiry = localStorage.getItem('cookie-consent-expiry');
     const now = new Date().getTime();
-    
+
     // Check if consent has expired (6 months)
     if (consentExpiry && now > parseInt(consentExpiry)) {
       localStorage.removeItem('cookie-consent');
@@ -382,7 +382,7 @@ const CookieConsent = () => {
       loadAdSense();
     }
   }, []);
-  
+
   const loadAdSense = () => {
     // This would be added to your index.html
     const script = document.createElement('script');
@@ -390,12 +390,12 @@ const CookieConsent = () => {
     script.async = true;
     script.crossOrigin = 'anonymous';
     document.head.appendChild(script);
-    
+
     // Initialize ads
     window.adsbygoogle = window.adsbygoogle || [];
     window.adsbygoogle.push({});
   };
-  
+
   const acceptAllCookies = () => {
     const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000); // 6 months
     localStorage.setItem('cookie-consent', 'accepted');
@@ -404,7 +404,7 @@ const CookieConsent = () => {
     setShowBanner(false);
     loadAdSense();
   };
-  
+
   const rejectNonEssential = () => {
     const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000); // 6 months
     localStorage.setItem('cookie-consent', 'accepted');
@@ -413,11 +413,11 @@ const CookieConsent = () => {
     setShowBanner(false);
     // Don't load AdSense
   };
-  
+
   const customizeAdPreferences = () => {
     setShowAdConsentOptions(true);
   };
-  
+
   const saveCustomAdPreferences = (personalized: boolean) => {
     const expiry = new Date().getTime() + (6 * 30 * 24 * 60 * 60 * 1000);
     localStorage.setItem('cookie-consent', 'accepted');
@@ -426,14 +426,14 @@ const CookieConsent = () => {
     localStorage.setItem('cookie-consent-expiry', expiry.toString());
     setShowAdConsentOptions(false);
     setShowBanner(false);
-    
+
     if (personalized) {
       loadAdSense();
     }
   };
-  
+
   if (!showBanner) return null;
-  
+
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-40 shadow-lg border-t border-gray-700">
@@ -445,15 +445,15 @@ const CookieConsent = () => {
                 <p className="font-medium text-sm md:text-base">Your Privacy & Ad Choices</p>
               </div>
               <p className="text-xs md:text-sm text-gray-300">
-                We use cookies for site functionality and may show personalized ads via Google AdSense. 
+                We use cookies for site functionality and may show personalized ads via Google AdSense.
                 By continuing to browse, you agree to our{' '}
-                <button 
+                <button
                   onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
                   className="text-blue-300 hover:text-blue-200 underline inline"
                 >
                   Privacy Policy
                 </button> and{' '}
-                <button 
+                <button
                   onClick={() => document.getElementById('terms-modal')?.classList.remove('hidden')}
                   className="text-blue-300 hover:text-blue-200 underline inline"
                 >
@@ -498,14 +498,14 @@ const CookieConsent = () => {
                 <ExclamationTriangleIcon className="h-6 w-6 md:h-8 md:w-8 text-orange-500 flex-shrink-0" />
                 <h3 className="text-lg md:text-xl font-bold text-gray-900">Advertising Preferences</h3>
               </div>
-              
+
               <p className="text-gray-600 text-sm md:text-base mb-6">
                 We partner with Google AdSense to show ads. You can choose whether to see personalized ads based on your interests.
               </p>
-              
+
               <div className="space-y-3 md:space-y-4 mb-6">
                 <div className="border border-gray-200 rounded-lg md:rounded-xl p-3 md:p-4 hover:bg-gray-50 cursor-pointer"
-                     onClick={() => saveCustomAdPreferences(true)}>
+                  onClick={() => saveCustomAdPreferences(true)}>
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="font-medium text-gray-900 text-sm md:text-base">Personalized Ads</p>
@@ -516,9 +516,9 @@ const CookieConsent = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg md:rounded-xl p-3 md:p-4 hover:bg-gray-50 cursor-pointer"
-                     onClick={() => saveCustomAdPreferences(false)}>
+                  onClick={() => saveCustomAdPreferences(false)}>
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="font-medium text-gray-900 text-sm md:text-base">Non-Personalized Ads</p>
@@ -528,11 +528,11 @@ const CookieConsent = () => {
                   </div>
                 </div>
               </div>
-              
+
               <p className="text-xs text-gray-500 mb-4">
                 You can change these settings anytime via the Privacy Center.
               </p>
-              
+
               <button
                 onClick={() => setShowAdConsentOptions(false)}
                 className="w-full px-4 py-2 text-sm md:text-base border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -550,16 +550,16 @@ const CookieConsent = () => {
 // Privacy Policy Modal with AdSense Terms
 const PrivacyPolicyModal = () => {
   const [showModal, setShowModal] = useState(false);
-  
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('show') === 'privacy') {
       setShowModal(true);
     }
   }, []);
-  
+
   if (!showModal) return null;
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg md:rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -579,7 +579,7 @@ const PrivacyPolicyModal = () => {
             <XMarkIcon className="h-5 w-5 md:h-6 md:w-6" />
           </button>
         </div>
-        
+
         <div className="p-4 md:p-6 space-y-6 md:space-y-8">
           {/* AdSense Compliance Notice */}
           <section className="bg-blue-50 border border-blue-200 rounded-lg md:rounded-xl p-3 md:p-4">
@@ -588,11 +588,11 @@ const PrivacyPolicyModal = () => {
               <div>
                 <h3 className="font-bold text-blue-800 text-sm md:text-base mb-1 md:mb-2">Google AdSense Compliance</h3>
                 <p className="text-blue-700 text-xs md:text-sm">
-                  This site uses Google AdSense for advertising. AdSense uses cookies to serve personalized ads based on your browsing behavior. 
+                  This site uses Google AdSense for advertising. AdSense uses cookies to serve personalized ads based on your browsing behavior.
                   You can opt-out of personalized advertising by visiting{' '}
-                  <a 
-                    href="https://adssettings.google.com" 
-                    target="_blank" 
+                  <a
+                    href="https://adssettings.google.com"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="underline font-medium"
                   >
@@ -602,7 +602,7 @@ const PrivacyPolicyModal = () => {
               </div>
             </div>
           </section>
-          
+
           {/* Affiliate Disclosure */}
           <section>
             <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 flex items-center gap-2">
@@ -626,7 +626,7 @@ const PrivacyPolicyModal = () => {
               </p>
             </div>
           </section>
-          
+
           {/* Data Collection for Ads */}
           <section>
             <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Data Used for Advertising</h3>
@@ -652,7 +652,7 @@ const PrivacyPolicyModal = () => {
               </div>
             </div>
           </section>
-          
+
           {/* Your Advertising Rights */}
           <section>
             <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Control Your Advertising Experience</h3>
@@ -663,9 +663,9 @@ const PrivacyPolicyModal = () => {
                   <h4 className="font-semibold text-green-800 text-sm md:text-base mb-1">Opt-Out of Personalized Ads</h4>
                   <p className="text-green-700 text-xs md:text-sm">
                     Visit{' '}
-                    <a 
-                      href="https://adssettings.google.com" 
-                      target="_blank" 
+                    <a
+                      href="https://adssettings.google.com"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="underline font-medium"
                     >
@@ -675,16 +675,16 @@ const PrivacyPolicyModal = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-blue-50 rounded-lg md:rounded-xl">
                 <DocumentTextIcon className="h-4 w-4 md:h-5 md:w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold text-blue-800 text-sm md:text-base mb-1">Network Advertising Initiative</h4>
                   <p className="text-blue-700 text-xs md:text-sm">
                     Opt-out of personalized advertising from participating companies at{' '}
-                    <a 
-                      href="https://optout.networkadvertising.org" 
-                      target="_blank" 
+                    <a
+                      href="https://optout.networkadvertising.org"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="underline font-medium"
                     >
@@ -695,7 +695,7 @@ const PrivacyPolicyModal = () => {
               </div>
             </div>
           </section>
-          
+
           {/* Contact Information */}
           <section className="bg-gray-50 p-4 md:p-6 rounded-lg md:rounded-xl">
             <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Contact & Data Requests</h3>
@@ -709,7 +709,7 @@ const PrivacyPolicyModal = () => {
               </p>
             </div>
           </section>
-          
+
           {/* Footer Actions */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4 pt-4 md:pt-6 border-t">
             <button
@@ -750,11 +750,11 @@ const PrivacyPolicyModal = () => {
 // AdSense Ad Unit Component
 const AdSenseAd = ({ format = 'auto', slot = '' }) => {
   const [adConsent, setAdConsent] = useState<string | null>(null);
-  
+
   useEffect(() => {
     const consent = localStorage.getItem('ad-consent');
     setAdConsent(consent);
-    
+
     if (consent === 'accepted' && window.adsbygoogle) {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -763,13 +763,13 @@ const AdSenseAd = ({ format = 'auto', slot = '' }) => {
       }
     }
   }, []);
-  
+
   if (adConsent !== 'accepted') {
     return (
       <div className="bg-gray-100 border border-gray-200 rounded-lg p-3 md:p-4 text-center">
         <p className="text-xs md:text-sm text-gray-500">
           Ads are disabled based on your privacy preferences.
-          <button 
+          <button
             onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
             className="text-blue-600 hover:text-blue-800 ml-1 underline"
           >
@@ -779,7 +779,7 @@ const AdSenseAd = ({ format = 'auto', slot = '' }) => {
       </div>
     );
   }
-  
+
   return (
     <div className="ad-container my-3 md:my-4">
       <ins
@@ -814,7 +814,7 @@ const ResponsiveHeader = () => {
             </p>
           </div>
         </div>
-        
+
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
@@ -855,8 +855,8 @@ const AmazonPromoCard = () => {
           <span className="font-semibold">Sponsored Content:</span> Contains affiliate links
         </p>
       </div>
-      
-      <div 
+
+      <div
         onClick={handleAmazonClick}
         className="cursor-pointer group bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-300 relative"
       >
@@ -866,31 +866,43 @@ const AmazonPromoCard = () => {
             Affiliate
           </span>
         </div>
-        
+
         <div className="h-1.5 md:h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
         <div className="p-4 md:p-6">
           <div className="flex items-center justify-between mb-3 md:mb-4">
-            <div className="inline-flex p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500">
-              <ShoppingBagIcon className="h-5 w-5 md:h-6 md:w-6 lg:h-8 lg:w-8 text-white" />
-              <h3 className='bold text-2xl ml-2'>Amazon</h3>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-2 p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="h-8 w-8 md:h-6 md:w-6 text-black"
+                >
+                  <path d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM3.75 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM16.5 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" />
+                </svg>
+                <div className="flex flex-col">
+                  <h3 className="font-bold text-base md:text-2xl text-black">Amazon</h3>
+                  <p className="text-xs text-black opacity-90">Tech Resources Store</p>
+                </div>
+              </div>
             </div>
             <span className="px-2 py-0.5 md:px-3 md:py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
               Sponsored
             </span>
           </div>
-          
+
           <div className="flex flex-col lg:flex-row items-start gap-3 md:gap-4">
             <div className="flex-1">
               <h3 className="text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 md:mb-2 group-hover:text-orange-600 transition-colors">
                 Essential Tech Learning Resources on Amazon
               </h3>
               <p className="text-gray-600 text-sm md:text-base mb-2 md:mb-3">
-                Discover books, tools, and accessories recommended by industry experts to accelerate your learning journey. 
+                Discover books, tools, and accessories recommended by industry experts to accelerate your learning journey.
                 <span className="block text-xs md:text-sm text-gray-500 mt-0.5 md:mt-1">
                   <strong>Note:</strong> As an Amazon Associate, we earn from qualifying purchases. Your support helps us create more free content.
                 </span>
               </p>
-              
+
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div className="flex items-center text-orange-600 font-semibold text-sm md:text-base group-hover:translate-x-1 md:group-hover:translate-x-2 transition-transform">
                   <span>Explore Tech Resources</span>
@@ -901,7 +913,7 @@ const AmazonPromoCard = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="hidden lg:block">
               <div className="px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg text-white font-bold text-center min-w-[120px]">
                 <div className="text-xs">Sponsored</div>
@@ -911,7 +923,7 @@ const AmazonPromoCard = () => {
           </div>
         </div>
       </div>
-      
+
       <p className="text-xs text-gray-400 text-center mt-2">
         Advertisement - Your purchase supports our platform at no extra cost to you
       </p>
@@ -922,22 +934,22 @@ const AmazonPromoCard = () => {
 // Updated LandingPage component with Amazon block at top
 function LandingPage({ onCardClick }: LandingPageProps) {
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Cookie Consent Banner */}
       <CookieConsent />
-      
+
       {/* Privacy Policy Modal */}
       <div id="privacy-modal" className="hidden">
         <PrivacyPolicyModal />
       </div>
-      
+
       {/* Terms Modal */}
       <div id="terms-modal" className="hidden">
         {/* Add Terms of Service modal content here */}
       </div>
-      
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         {/* Responsive Header */}
         <ResponsiveHeader />
@@ -952,7 +964,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
           {technologies.map((tech: Technology) => {
             const Icon = tech.icon
             const remainingTopicsCount = tech.topics.length - 3;
-            
+
             return (
               <div
                 key={tech.id}
@@ -1028,7 +1040,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
         </div>
 
         {/* Bottom AdSense Ad */}
-    
+
 
         {/* Compliance Footer - Responsive */}
         <footer className="mt-8 md:mt-12 lg:mt-16 pt-4 md:pt-6 lg:pt-8 border-t border-gray-200">
@@ -1037,7 +1049,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
               <p className="text-gray-700 font-medium text-sm md:text-base">Tech Learning Hub © {currentYear}</p>
               <p className="text-xs text-gray-500">AdSense & GDPR Compliant</p>
             </div>
-            
+
             <div className="hidden lg:flex flex-wrap justify-center gap-3">
               <button
                 onClick={() => document.getElementById('privacy-modal')?.classList.remove('hidden')}
@@ -1075,7 +1087,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
                 NAI Opt-Out
               </a>
             </div>
-            
+
             <div className="flex items-center gap-2 md:gap-3">
               <div className="w-8 h-8 md:w-10 md:h-10 bg-orange-100 rounded-full flex items-center justify-center">
                 <ExclamationTriangleIcon className="h-4 w-4 md:h-5 md:w-5 text-orange-600" />
@@ -1086,7 +1098,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
               </div>
             </div>
           </div>
-          
+
           {/* Mobile Footer Links */}
           <div className="lg:hidden mt-6">
             <div className="grid grid-cols-2 gap-3">
@@ -1108,7 +1120,7 @@ function LandingPage({ onCardClick }: LandingPageProps) {
               </a>
             </div>
           </div>
-          
+
           {/* Compliance Badges - Responsive */}
           <div className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-4">
             <div className="px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full text-xs font-medium flex items-center gap-1.5">
@@ -1128,21 +1140,21 @@ function LandingPage({ onCardClick }: LandingPageProps) {
               Affiliate
             </div>
           </div>
-          
+
           {/* Required AdSense Disclosure */}
           <div className="mt-4 md:mt-6 p-3 md:p-4 bg-gray-50 rounded-lg md:rounded-xl border border-gray-200">
             <p className="text-xs text-gray-600 text-center">
-              <strong>Advertising Disclosure:</strong> This site uses Google AdSense for advertising. 
-              Google uses cookies to serve ads based on your visits to this site and other sites. 
+              <strong>Advertising Disclosure:</strong> This site uses Google AdSense for advertising.
+              Google uses cookies to serve ads based on your visits to this site and other sites.
               You can opt out of personalized advertising by visiting{' '}
-              <a 
-                href="https://adssettings.google.com" 
-                target="_blank" 
+              <a
+                href="https://adssettings.google.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline"
               >
                 Ads Settings
-              </a>. 
+              </a>.
               Third-party vendors may also use cookies for ad personalization.
             </p>
           </div>
